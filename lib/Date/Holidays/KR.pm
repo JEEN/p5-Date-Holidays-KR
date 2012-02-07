@@ -31,20 +31,20 @@ my $LUNAR = {
 
 sub is_solar_holiday {
     my ($year, $month, $day) = @_;
-    defined $year  || return undef;
-    defined $month || return undef;
-    defined $day   || return undef;
+    defined $year  || return;
+    defined $month || return;
+    defined $day   || return;
     return $SOLAR->{sprintf '%02d%02d', $month, $day};
 }
 
 sub is_lunar_holiday {
     my ($year, $month, $day) = @_;
-    defined $year  || return undef;
-    defined $month || return undef;
-    defined $day   || return undef; 
+    defined $year  || return;
+    defined $month || return;
+    defined $day   || return; 
 
     my ($ly, $lm, $ld, $leap) = sol2lun($year, $month, $day);
-    return undef if $leap;
+    return if $leap;
     return $LUNAR->{sprintf '%02d%02d', $lm, $ld};
 }
 
@@ -54,7 +54,7 @@ sub is_holiday {
 
 sub holidays {
     my ($year) = @_;
-    defined $year || return undef;
+    defined $year || return;
 
     my $holidays = { %{ $SOLAR } };
 
@@ -102,6 +102,8 @@ if it's a holiday, or undef otherwise.
 
 takes a year, and returns a hashref of all the holidays for the year
 
+=back
+
 =head1 CAVEATS
 
 =over 4
@@ -109,6 +111,8 @@ takes a year, and returns a hashref of all the holidays for the year
 =item *
 
 Currently supported data range is from solar 1391-02-05 ( lunisolar 1391-01-01 ) to 2050-12-31 ( lunisolar 2050-11-18 )
+
+=back
 
 =head1 AUTHOR
 

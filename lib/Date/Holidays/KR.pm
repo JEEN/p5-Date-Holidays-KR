@@ -2,6 +2,7 @@ package Date::Holidays::KR;
 use strict;
 use warnings;
 use base 'Exporter';
+use 5.006;
 use Date::Korean;
 our $VERSION = '0.03';
 

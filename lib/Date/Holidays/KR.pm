@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base 'Exporter';
 use Date::Korean;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 our @EXPORT = qw/is_holiday holidays/;
 our @EXPORT_OK = qw/is_solar_holiday is_lunar_holiday/;

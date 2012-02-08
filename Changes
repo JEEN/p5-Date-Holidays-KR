@@ -1,4 +1,6 @@
 Revision history for Perl extension Date::Holidays::KR
 
-0.01    Tue Feb  7 18:12:47 2012
+0.02    Wed Feb  8 11:00:00 2012 KST
+        - requires Date::Korean
+0.01    Tue Feb  7 18:12:47 2012 KST
         - original version

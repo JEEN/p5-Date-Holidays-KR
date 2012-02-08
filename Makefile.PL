@@ -2,7 +2,7 @@ use inc::Module::Install;
 name 'Date-Holidays-KR';
 all_from 'lib/Date/Holidays/KR.pm';
 
-# requires '';
+requires 'Date::Korean';
 
 tests 't/*.t';
 author_tests 'xt';

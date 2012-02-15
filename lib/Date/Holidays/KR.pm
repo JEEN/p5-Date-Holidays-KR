@@ -4,26 +4,29 @@ use warnings;
 use base 'Exporter';
 use 5.006;
 use Date::Korean;
+use DateTime;
+use Try::Tiny;
 our $VERSION = '0.03';
 
 our @EXPORT = qw/is_holiday holidays/;
 our @EXPORT_OK = qw/is_solar_holiday is_lunar_holiday/;
 
 my $SOLAR = {
-	'0101' => '신정',
-	'0301' => '삼일절',
-	'0505' => '어린이날',
-	'0606' => '현충일',
-	'0815' => '광복절',
-	'1003' => '개천절',
-	'1225' => '크리스마스',	
+    '0101' => '신정',
+    '0301' => '삼일절',
+    '0505' => '어린이날',
+    '0606' => '현충일',
+    '0815' => '광복절',
+    '1003' => '개천절',
+    '1225' => '크리스마스',
 };
 
 my $LUNAR = {
-	'1229' => '설앞날',
-	'0101' => '설날',
-	'0102' => '설뒷날',
-	'0408' => '부처님오신날',
+    '1229' => '설앞날',
+    '1230' => '설앞날',
+    '0101' => '설날',
+    '0102' => '설뒷날',
+    '0408' => '부처님오신날',
     '0814' => '추석앞날',
     '0815' => '추석',
     '0816' => '추석뒷날',
@@ -44,7 +47,21 @@ sub is_lunar_holiday {
     defined $day   || return; 
 
     my ($ly, $lm, $ld, $leap) = sol2lun($year, $month, $day);
-    return if $leap;
+
+    #
+    # check for Korean New Year
+    #
+    if ( $lm == 12 && $ld == 29 ) {
+        my $dt = DateTime->new(
+            year      => $year,
+            month     => $month,
+            day       => $day,
+        )->add( days => 1 );
+
+        my ( $y, $m, $d ) = sol2lun($dt->year, $dt->month, $dt->day);
+        return if $m == 12 && $d == 30;
+    }
+
     return $LUNAR->{sprintf '%02d%02d', $lm, $ld};
 }
 
@@ -56,13 +73,44 @@ sub holidays {
     my ($year) = @_;
     defined $year || return;
 
-    my $holidays = { %{ $SOLAR } };
+    my $holidays = { %$SOLAR };
 
-    for my $date (%{ $LUNAR }) {
-        my ($lmonth, $lday) = $date =~ /^(\d\d)(\d\d)$/;
-        my ($syear, $smonth, $sday) = lun2sol($year, $lmonth, $lday);
-        $holidays->{sprintf '%02%02d', $smonth, $sday} = $LUNAR->{$date}; 
+    for my $_year ( ($year - 1) .. $year ) {
+        for my $date ( keys %$LUNAR ) {
+            my ($lm, $ld) = $date =~ /^(\d\d)(\d\d)$/;
+
+            $lm =~ s/^0+//;
+            $ld =~ s/^0+//;
+
+            my ( $y, $m, $d ) =
+                try   { lun2sol($_year, $lm, $ld, 1) }
+                catch {
+                    try { lun2sol($_year, $lm, $ld, 0) }
+                    catch { () };
+                };
+
+            next unless $y;
+            next unless $y eq $year;
+
+            #
+            # check Korean New Year
+            #
+            if ( $lm == 12 && $ld == 29 ) {
+                my $dt = DateTime->new(
+                    year      => $year,
+                    month     => $m,
+                    day       => $d,
+                )->add( days => 1 );
+
+                my ( $ly2, $lm2, $ld2 ) = sol2lun($dt->year, $dt->month, $dt->day);
+
+                next if $lm2 == 12 && $ld2 == 30;
+            }
+
+            $holidays->{sprintf '%02d%02d', $m, $d} = $LUNAR->{$date};
+        }
     }
+
     $holidays;
 }
 
@@ -82,7 +130,7 @@ Date::Holidays::KR - Determine Korean public holidays
 
   my $dt = DateTime->now( time_zone => 'local' );
   if (my $holiday_name = is_holiday($dt->year, $dt->month, $dt->day)) {
-  	print "오늘은 $holiday_name 입니다";
+      print "오늘은 $holiday_name 입니다";
   }
 
 =head1 DESCRIPTION

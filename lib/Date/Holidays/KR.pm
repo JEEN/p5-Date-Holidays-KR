@@ -5,6 +5,7 @@ use base 'Exporter';
 use 5.006;
 use Date::Korean;
 use DateTime;
+use Try::Tiny;
 our $VERSION = '0.03';
 
 our @EXPORT = qw/is_holiday holidays/;
@@ -48,7 +49,7 @@ sub is_lunar_holiday {
     my ($ly, $lm, $ld, $leap) = sol2lun($year, $month, $day);
 
     #
-    # patch for Korean New Year
+    # check for Korean New Year
     #
     if ( $lm == 12 && $ld == 29 ) {
         my $dt = DateTime->new(
@@ -72,13 +73,44 @@ sub holidays {
     my ($year) = @_;
     defined $year || return;
 
-    my $holidays = { %{ $SOLAR } };
+    my $holidays = { %$SOLAR };
 
-    for my $date (%{ $LUNAR }) {
-        my ($lmonth, $lday) = $date =~ /^(\d\d)(\d\d)$/;
-        my ($syear, $smonth, $sday) = lun2sol($year, $lmonth, $lday);
-        $holidays->{sprintf '%02%02d', $smonth, $sday} = $LUNAR->{$date}; 
+    for my $_year ( ($year - 1) .. $year ) {
+        for my $date ( keys %$LUNAR ) {
+            my ($lm, $ld) = $date =~ /^(\d\d)(\d\d)$/;
+
+            $lm =~ s/^0+//;
+            $ld =~ s/^0+//;
+
+            my ( $y, $m, $d ) =
+                try   { lun2sol($_year, $lm, $ld, 1) }
+                catch {
+                    try { lun2sol($_year, $lm, $ld, 0) }
+                    catch { () };
+                };
+
+            next unless $y;
+            next unless $y eq $year;
+
+            #
+            # check Korean New Year
+            #
+            if ( $lm == 12 && $ld == 29 ) {
+                my $dt = DateTime->new(
+                    year      => $year,
+                    month     => $m,
+                    day       => $d,
+                )->add( days => 1 );
+
+                my ( $ly2, $lm2, $ld2 ) = sol2lun($dt->year, $dt->month, $dt->day);
+
+                next if $lm2 == 12 && $ld2 == 30;
+            }
+
+            $holidays->{sprintf '%02d%02d', $m, $d} = $LUNAR->{$date};
+        }
     }
+
     $holidays;
 }
 

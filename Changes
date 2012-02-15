@@ -1,6 +1,13 @@
 Revision history for Perl extension Date::Holidays::KR
 
-0.03    Web Feb  8 12:00:00 2012 KST
+0.04    Wed Feb 15 21:00:00 2012 KST
+        - Add failed test to check Korean New Year ( @keedi++ ↓)
+        - Remove tab and trailling spaces
+        - Korean New Year patch for is_holiday()
+        - Add failed test for holidays() function
+        - Korean New Year patch for holidays()
+
+0.03    Wed Feb  8 12:00:00 2012 KST
         - Added META.yml
 0.02    Wed Feb  8 11:00:00 2012 KST
         - requires Date::Korean

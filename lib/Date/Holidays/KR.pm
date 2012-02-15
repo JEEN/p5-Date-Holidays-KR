@@ -6,7 +6,7 @@ use 5.006;
 use Date::Korean;
 use DateTime;
 use Try::Tiny;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 our @EXPORT = qw/is_holiday holidays/;
 our @EXPORT_OK = qw/is_solar_holiday is_lunar_holiday/;
@@ -164,7 +164,7 @@ Currently supported data range is from solar 1391-02-05 ( lunisolar 1391-01-01 )
 
 =head1 AUTHOR
 
-Jeen Lee E<lt>aiatejin {at} gmail.comE<gt>
+Jeen Lee E<lt>aiatejin {at} gmail.comE<gt>, Keedi Kim E<lt> keedi.kim {at} gmail.comE<gt>
 
 =head1 SEE ALSO
 

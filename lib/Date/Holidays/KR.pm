@@ -10,20 +10,20 @@ our @EXPORT = qw/is_holiday holidays/;
 our @EXPORT_OK = qw/is_solar_holiday is_lunar_holiday/;
 
 my $SOLAR = {
-	'0101' => '신정',
-	'0301' => '삼일절',
-	'0505' => '어린이날',
-	'0606' => '현충일',
-	'0815' => '광복절',
-	'1003' => '개천절',
-	'1225' => '크리스마스',	
+    '0101' => '신정',
+    '0301' => '삼일절',
+    '0505' => '어린이날',
+    '0606' => '현충일',
+    '0815' => '광복절',
+    '1003' => '개천절',
+    '1225' => '크리스마스',
 };
 
 my $LUNAR = {
-	'1229' => '설앞날',
-	'0101' => '설날',
-	'0102' => '설뒷날',
-	'0408' => '부처님오신날',
+    '1229' => '설앞날',
+    '0101' => '설날',
+    '0102' => '설뒷날',
+    '0408' => '부처님오신날',
     '0814' => '추석앞날',
     '0815' => '추석',
     '0816' => '추석뒷날',
@@ -82,7 +82,7 @@ Date::Holidays::KR - Determine Korean public holidays
 
   my $dt = DateTime->now( time_zone => 'local' );
   if (my $holiday_name = is_holiday($dt->year, $dt->month, $dt->day)) {
-  	print "오늘은 $holiday_name 입니다";
+      print "오늘은 $holiday_name 입니다";
   }
 
 =head1 DESCRIPTION

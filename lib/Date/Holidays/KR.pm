@@ -6,7 +6,7 @@ use 5.006;
 use Date::Korean;
 use DateTime;
 use Try::Tiny;
-our $VERSION = '0.04';
+our $VERSION = '0.0401';
 
 our @EXPORT = qw/is_holiday holidays/;
 our @EXPORT_OK = qw/is_solar_holiday is_lunar_holiday/;

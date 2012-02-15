@@ -4,6 +4,7 @@ use warnings;
 use base 'Exporter';
 use 5.006;
 use Date::Korean;
+use DateTime;
 our $VERSION = '0.03';
 
 our @EXPORT = qw/is_holiday holidays/;
@@ -21,6 +22,7 @@ my $SOLAR = {
 
 my $LUNAR = {
     '1229' => '설앞날',
+    '1230' => '설앞날',
     '0101' => '설날',
     '0102' => '설뒷날',
     '0408' => '부처님오신날',
@@ -44,7 +46,21 @@ sub is_lunar_holiday {
     defined $day   || return; 
 
     my ($ly, $lm, $ld, $leap) = sol2lun($year, $month, $day);
-    return if $leap;
+
+    #
+    # patch for Korean New Year
+    #
+    if ( $lm == 12 && $ld == 29 ) {
+        my $dt = DateTime->new(
+            year      => $year,
+            month     => $month,
+            day       => $day,
+        )->add( days => 1 );
+
+        my ( $y, $m, $d ) = sol2lun($dt->year, $dt->month, $dt->day);
+        return if $m == 12 && $d == 30;
+    }
+
     return $LUNAR->{sprintf '%02d%02d', $lm, $ld};
 }
 

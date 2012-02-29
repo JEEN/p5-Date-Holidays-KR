@@ -6,7 +6,7 @@ use 5.006;
 use Date::Korean;
 use DateTime;
 use Try::Tiny;
-our $VERSION = '0.0401';
+our $VERSION = '0.0402';
 
 our @EXPORT = qw/is_holiday holidays/;
 our @EXPORT_OK = qw/is_solar_holiday is_lunar_holiday/;
@@ -48,20 +48,8 @@ sub is_lunar_holiday {
 
     my ($ly, $lm, $ld, $leap) = sol2lun($year, $month, $day);
 
-    #
-    # check for Korean New Year
-    #
-    if ( $lm == 12 && $ld == 29 ) {
-        my $dt = DateTime->new(
-            year      => $year,
-            month     => $month,
-            day       => $day,
-        )->add( days => 1 );
-
-        my ( $y, $m, $d ) = sol2lun($dt->year, $dt->month, $dt->day);
-        return if $m == 12 && $d == 30;
-    }
-
+    my $flag = _check_korean_new_year($year, $lm, $ld, $month, $day);
+    return if $flag;
     return $LUNAR->{sprintf '%02d%02d', $lm, $ld};
 }
 
@@ -79,8 +67,8 @@ sub holidays {
         for my $date ( keys %$LUNAR ) {
             my ($lm, $ld) = $date =~ /^(\d\d)(\d\d)$/;
 
-            $lm =~ s/^0+//;
-            $ld =~ s/^0+//;
+            $lm = int $lm;
+            $ld = int $ld;
 
             my ( $y, $m, $d ) =
                 try   { lun2sol($_year, $lm, $ld, 1) }
@@ -95,23 +83,30 @@ sub holidays {
             #
             # check Korean New Year
             #
-            if ( $lm == 12 && $ld == 29 ) {
-                my $dt = DateTime->new(
-                    year      => $year,
-                    month     => $m,
-                    day       => $d,
-                )->add( days => 1 );
-
-                my ( $ly2, $lm2, $ld2 ) = sol2lun($dt->year, $dt->month, $dt->day);
-
-                next if $lm2 == 12 && $ld2 == 30;
-            }
-
+            my $flag = _check_korean_new_year($year, $lm, $ld, $m, $d);
+            next if $flag;
             $holidays->{sprintf '%02d%02d', $m, $d} = $LUNAR->{$date};
         }
     }
 
     $holidays;
+}
+
+sub _check_korean_new_year {
+    my ($y,$lm, $ld, $m, $d) = @_;
+
+    if ( $lm == 12 && $ld == 29 ) {
+        my $dt = DateTime->new(
+            year      => $y,
+            month     => $m,
+            day       => $d,
+        )->add( days => 1 );
+
+        my ( $ly2, $lm2, $ld2 ) = sol2lun($dt->year, $dt->month, $dt->day);
+
+        return 1 if $lm2 == 12 && $ld2 == 30;
+    }
+    return 0;
 }
 
 1;

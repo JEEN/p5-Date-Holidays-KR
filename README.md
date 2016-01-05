@@ -33,11 +33,11 @@ Date::Holidays::KR determines public holidays for Korean.
 
 # AUTHOR
 
-Jeen Lee <aiatejin {at} gmail.com>, Keedi Kim < keedi.kim {at} gmail.com>
+Jeen Lee &lt;aiatejin {at} gmail.com>, Keedi Kim < keedi.kim {at} gmail.com>
 
 # SEE ALSO
 
-[Date::Korean](http://search.cpan.org/perldoc?Date::Korean), [Date::Holidays::CN](http://search.cpan.org/perldoc?Date::Holidays::CN)
+[Date::Korean](https://metacpan.org/pod/Date::Korean), [Date::Holidays::CN](https://metacpan.org/pod/Date::Holidays::CN)
 
 # LICENSE
 

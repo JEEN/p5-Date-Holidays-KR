@@ -1,6 +1,7 @@
 Revision history for Perl extension Date-Holidays-KR
 
 {{$NEXT}}
+        - Add holiday(Day of Hangul)
 
 0.05 2013-08-01T14:09:12Z
         - Fix http://www.cpantesters.org/cpan/report/0bab814a-f52b-11e2-9591-b4ba88f30751

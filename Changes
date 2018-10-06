@@ -1,6 +1,8 @@
 Revision history for Perl extension Date-Holidays-KR
 
 {{$NEXT}}
+
+0.07 2018-10-06T15:16:17Z
         - Add utf8 pragma
 
 0.06 2016-01-05T07:52:05Z

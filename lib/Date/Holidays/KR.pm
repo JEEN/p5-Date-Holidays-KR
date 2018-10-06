@@ -1,4 +1,5 @@
 package Date::Holidays::KR;
+use utf8;
 use strict;
 use warnings;
 use base 'Exporter';

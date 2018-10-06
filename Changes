@@ -1,6 +1,7 @@
 Revision history for Perl extension Date-Holidays-KR
 
 {{$NEXT}}
+        - Add utf8 pragma
 
 0.06 2016-01-05T07:52:05Z
         - Add holiday(Day of Hangul)

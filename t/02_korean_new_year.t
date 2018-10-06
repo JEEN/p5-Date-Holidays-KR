@@ -1,3 +1,4 @@
+use utf8;
 use strict;
 use DateTime;
 BEGIN { $ENV{TZ} = 'Asia/Seoul' } 
